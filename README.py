@@ -83,4 +83,25 @@ db.commit()
 for row in db.execute("SELECT * FROM states"):
     print(row)
 
+
+# Sys.settrace :
+
+
+import sys, time, sqlite3, zlib, pickle
+
+db = sqlite3.connect(":memory:")
+db.execute(""" CREATE TABLE states (
+    id INTEGER PRIMER KEY AUTOINCREMENT,
+    ts REAL, line INTEGER, var TEXT, value BLOB
+)""")
+
+_last_values = {}
+
+def tracefun(frame, event, arg):
+    if event == "line":
+        lineno = frame.f_lineno
+        for var, val in frame.f_locals.items():
+            
+
+
     
