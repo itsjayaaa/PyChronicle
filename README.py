@@ -169,4 +169,53 @@ class PyChronicleUI(App):
             )
 if __name__ == "__main__":
     PyChronicleUI().run()
-                       
+
+# Delta Compression
+
+import hashlib, pickle, zlib
+
+_last_values ={}
+
+def serialize(val):
+    return zlib.compress(pickle.dumps(val))
+
+def hash_value(value):
+    return hashlib.sha256(pickle.dumps(val)).hexdigest()
+
+def __pychronicle_hook__(var, val, lineno, db):
+    h = hash_value(val)
+    prev = _last_values.get(var)
+    if prev != h: # only store if changed
+        blob = serialize(val)
+        db.execute("INSERT INTO states (ts, line, var, value) VALUES (?, ?, ?, ?)",
+                   (time.time(), lineno, var, blob))
+        _last_values[var] = h
+    return val
+
+# Time-scrubbing UI :
+
+from textual.app import App, ComposeReslut
+from textual.widgets import Static, Slider
+import sqlite3, pickle, zlib
+
+db = sqlite3.connect(":memory:")
+class PyChronicleUI(App):
+    def compose(self) -> ComposeReslut:
+        yield Static("code view", id = "code")
+        # Dynamically set slider range based on DB timestamps
+        min_ts, max_ts = db.execute("SELECT MIN(ts), MAX(ts), FROM states").fetchone()
+        yield Slider(id="timeline", min=min_ts or 0, max=max_ts or 100)
+
+    def on_slider_changed(self, event: Slider.changed) -> None:
+        ts = event.value
+        row = db.execute(
+            "select line, var, value FROM states WHERE ts <= ? ORDER BY ts DESC LIMIT 1",
+            (ts,)
+        ).fetchone()
+        if row:
+            line, var, blob = row
+            val = pickle.loads(zlib.decompress(blob))
+            self.query_one("#code", Static).update(
+                f"[Line {line}] {var} = {val}"
+            )
+            
