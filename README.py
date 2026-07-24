@@ -1,7 +1,5 @@
 # PyChronicle
 
-# PyChronicle
-
 # AST module :
 
 import ast, sys, sqlite3, time
