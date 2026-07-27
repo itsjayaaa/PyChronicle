@@ -219,3 +219,38 @@ class PyChronicleUI(App):
                 f"[Line {line}] {var} = {val}"
             )
             
+# Packaging as a CLI
+
+import typer
+from .tracer import run_script
+from .UI import PyChronicleUI
+
+app = typer.Typer()
+
+@app.command()
+def run(path: str, ui: bool = True):
+    """Run a target python script with PyChronicle tracing."""
+    run_script(path)
+    if ui:
+        PyChronicleUI().RUN()
+
+if __name__ == "__main__":
+    app()
+
+# Refine and polish
+
+from textual.widgets import sysntax
+
+code_view.highlight(line)
+
+
+Variables panel:
+
+from textual.widgets import DataTable
+
+watch_table = DataTable()
+watch_table.add_columns("variable", "value")
+
+# Update on slider change
+watch_table.update_cell(0, 0, var)
+watch_table.update_cell(0, 1, val)
