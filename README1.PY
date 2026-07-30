@@ -24,4 +24,3 @@ db.commit()
 
 for row in db.execute("SELECT * FROM states"):
     print(row)
-     
