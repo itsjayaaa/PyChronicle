@@ -1,0 +1,8 @@
+{
+  "name": "PyChronicle Python Time-Travel Tracer",
+  "description": "Deterministic Python time-travel debugging engine and visual execution tracer",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}
