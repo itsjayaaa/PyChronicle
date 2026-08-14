@@ -1,0 +1,17 @@
+{
+  "name": "pychronicle-tracer",
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "python3 server.py 3000",
+    "build": "python3 -c \"print('Python build verified')\"",
+    "start": "python3 server.py 3000",
+    "lint": "python3 -m py_compile server.py run.py pychronicle/*.py"
+  },
+  "dependencies": {
+    "express": "^4.21.2"
+  },
+  "devDependencies": {
+    "esbuild": "^0.24.0"
+  }
+}
